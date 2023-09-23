@@ -1,0 +1,194 @@
+{
+    "_version": "1.49.0",
+    "sap.app": {
+        "id": "moderman.modermanadmin",
+        "type": "application",
+        "i18n": "i18n/i18n.properties",
+        "applicationVersion": {
+            "version": "0.0.1"
+        },
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "resources": "resources.json",
+        "sourceTemplate": {
+            "id": "@sap/generator-fiori:lrop",
+            "version": "1.11.0",
+            "toolsId": "f3e18634-0edd-4ecb-9186-6ab98ad5920f"
+        },
+        "dataSources": {
+            "mainService": {
+                "uri": "/odata/v4/moderation/",
+                "type": "OData",
+                "settings": {
+                    "annotations": [
+                        "annotation"
+                    ],
+                    "localUri": "localService/metadata.xml",
+                    "odataVersion": "4.0"
+                }
+            },
+            "annotation": {
+                "type": "ODataAnnotation",
+                "uri": "annotations/annotation.xml",
+                "settings": {
+                    "localUri": "annotations/annotation.xml"
+                }
+            }
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {
+            "icon": "",
+            "favIcon": "",
+            "phone": "",
+            "phone@2": "",
+            "tablet": "",
+            "tablet@2": ""
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        }
+    },
+    "sap.ui5": {
+        "flexEnabled": true,
+        "dependencies": {
+            "minUI5Version": "1.118.0",
+            "libs": {
+                "sap.m": {},
+                "sap.ui.core": {},
+                "sap.ushell": {},
+                "sap.fe.templates": {}
+            }
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "moderman.modermanadmin.i18n.i18n"
+                }
+            },
+            "": {
+                "dataSource": "mainService",
+                "preload": true,
+                "settings": {
+                    "synchronizationMode": "None",
+                    "operationMode": "Server",
+                    "autoExpandSelect": true,
+                    "earlyRequests": true
+                }
+            },
+            "@i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "i18n/i18n.properties"
+            }
+        },
+        "resources": {
+            "css": []
+        },
+        "routing": {
+            "routes": [
+                {
+                    "pattern": ":?query:",
+                    "name": "ContentItemList",
+                    "target": "ContentItemList"
+                },
+                {
+                    "pattern": "ContentItem({key}):?query:",
+                    "name": "ContentItemObjectPage",
+                    "target": "ContentItemObjectPage"
+                },
+                {
+                    "pattern": "ContentItem({key})/contentItemActions({key2}):?query:",
+                    "name": "ContentItemActionObjectPage",
+                    "target": "ContentItemActionObjectPage"
+                }
+            ],
+            "targets": {
+                "ContentItemList": {
+                    "type": "Component",
+                    "id": "ContentItemList",
+                    "name": "sap.fe.templates.ListReport",
+                    "options": {
+                        "settings": {
+                            "entitySet": "ContentItem",
+                            "variantManagement": "Page",
+                            "navigation": {
+                                "ContentItem": {
+                                    "detail": {
+                                        "route": "ContentItemObjectPage"
+                                    }
+                                }
+                            },
+                            "controlConfiguration": {
+                                "@com.sap.vocabularies.UI.v1.LineItem": {
+                                    "columns": {
+                                        "MediaPreviewFragment": {
+                                            "header": "Media Preview",
+                                            "width": "50%",
+                                            "position": {
+                                                "anchor": "DataField::intentName",
+                                                "placement": "After"
+                                            },
+                                            "template": "moderman.modermanadmin.ext.fragment.MediaPreviewFragment",
+                                            "availability": "Default",
+                                            "horizontalAlign": "Center"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "ContentItemObjectPage": {
+                    "type": "Component",
+                    "id": "ContentItemObjectPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "editableHeaderContent": false,
+                            "entitySet": "ContentItem",
+                            "navigation": {
+                                "contentItemActions": {
+                                    "detail": {
+                                        "route": "ContentItemActionObjectPage"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "ContentItemActionObjectPage": {
+                    "type": "Component",
+                    "id": "ContentItemActionObjectPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "editableHeaderContent": false,
+                            "entitySet": "ContentItemAction"
+                        }
+                    }
+                }
+            }
+        },
+        "extends": {
+            "extensions": {
+                "sap.ui.controllerExtensions": {
+                    "sap.fe.templates.ListReport.ListReportController": {
+                        "controllerName": "moderman.modermanadmin.ext.controller.ModermanTableControllerExt"
+                    }
+                }
+            }
+        }
+    },
+    "sap.fiori": {
+        "registrationIds": [],
+        "archeType": "transactional"
+    }
+}

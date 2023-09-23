@@ -1,0 +1,15 @@
+<core:FragmentDefinition 
+	xmlns:core="sap.ui.core"
+	xmlns="sap.m" 
+	xmlns:mvc="sap.ui.core.mvc">
+
+<VBox>
+	<Text text="Hello world! {intentName}"/>
+	<core:HTML content='&lt;video width=&quot;400&quot; controls&gt; &lt;source src=&quot;https://download.samplelib.com/mp4/sample-5s.mp4&quot; type=&quot;video/mp4&quot;/&gt; Your browser does not support HTML5 video. &lt;/video&gt;'>
+	</core:HTML>
+			
+	
+	<Image src="https://bmubfmo1zz8n.objectstorage.ap-mumbai-1.oci.customer-oci.com/p/oM_bNRn8yrC6QpD4hIbDuUhNlzIMGYtP7QercIThtWfDcz5WWnFgR_wit1a7e1iC/n/bmubfmo1zz8n/b/semibit/o/images/rabbit-clear-case.png" width="500px" />
+	<Button core:require="{ handler: 'moderman/modermanadmin/ext/fragment/MediaPreviewFragment'}" text="Sample Text" press="handler.onPress" />
+</VBox>	
+</core:FragmentDefinition>
