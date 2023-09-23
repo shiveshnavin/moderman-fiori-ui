@@ -160,6 +160,21 @@
                                         "route": "ContentItemActionObjectPage"
                                     }
                                 }
+                            },
+                            "controlConfiguration": {
+                                "mediaItems/@com.sap.vocabularies.UI.v1.LineItem": {
+                                    "columns": {
+                                        "MediaItemPreviewFragment": {
+                                            "header": "Media Item Preview",
+                                            "width": "50%",
+                                            "position": {
+                                                "anchor": "DataField::mediaType",
+                                                "placement": "After"
+                                            },
+                                            "template": "moderman.modermanadmin.ext.fragment.MediaItemPreviewFragment"
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

@@ -1,531 +1,713 @@
 <?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
-    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
-        <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
-    </edmx:Reference>
-    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
-        <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
-    </edmx:Reference>
-    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
-        <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
-    </edmx:Reference>
-    <edmx:DataServices>
-        <Schema Namespace="ModerationService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
-            <EntityContainer Name="EntityContainer">
-                <EntitySet Name="ContentItem" EntityType="ModerationService.ContentItem">
-                    <NavigationPropertyBinding Path="contentItemActions" Target="ContentItemAction"/>
-                    <NavigationPropertyBinding Path="SiblingEntity" Target="ContentItem"/>
-                </EntitySet>
-                <EntitySet Name="ContentItemAction" EntityType="ModerationService.ContentItemAction">
-                    <NavigationPropertyBinding Path="contentItem" Target="ContentItem"/>
-                    <NavigationPropertyBinding Path="SiblingEntity" Target="ContentItemAction"/>
-                </EntitySet>
-                <EntitySet Name="ActionType" EntityType="ModerationService.ActionType"/>
-                <EntitySet Name="MediaType" EntityType="ModerationService.MediaType"/>
-            </EntityContainer>
-            <EntityType Name="ContentItem">
-                <Key>
-                    <PropertyRef Name="ID"/>
-                    <PropertyRef Name="IsActiveEntity"/>
-                </Key>
-                <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
-                <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
-                <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
-                <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
-                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
-                <Property Name="intentName" Type="Edm.String" MaxLength="100"/>
-                <Property Name="intentDescription" Type="Edm.String" MaxLength="100"/>
-                <Property Name="contentUrl" Type="Edm.String" MaxLength="100"/>
-                <Property Name="contentText" Type="Edm.String" MaxLength="100"/>
-                <Property Name="mediaType" Type="Edm.String" MaxLength="100"/>
-                <Property Name="ownerApp" Type="Edm.String" MaxLength="120"/>
-                <Property Name="targetActionDate" Type="Edm.Date"/>
-                <NavigationProperty Name="contentItemActions" Type="Collection(ModerationService.ContentItemAction)" Partner="contentItem">
-                    <OnDelete Action="Cascade"/>
-                </NavigationProperty>
-                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
-                <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
-                <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
-                <NavigationProperty Name="DraftAdministrativeData" Type="ModerationService.DraftAdministrativeData" ContainsTarget="true"/>
-                <NavigationProperty Name="SiblingEntity" Type="ModerationService.ContentItem"/>
-            </EntityType>
-            <EntityType Name="ContentItemAction">
-                <Key>
-                    <PropertyRef Name="ID"/>
-                    <PropertyRef Name="IsActiveEntity"/>
-                </Key>
-                <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
-                <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
-                <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
-                <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
-                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
-                <Property Name="ownerApp" Type="Edm.String" MaxLength="100"/>
-                <Property Name="actionName" Type="Edm.String" MaxLength="100"/>
-                <Property Name="actionDescription" Type="Edm.String" MaxLength="100"/>
-                <Property Name="actionStatus" Type="Edm.String" MaxLength="100"/>
-                <Property Name="actionCompletedDate" Type="Edm.Date"/>
-                <Property Name="actonPayload" Type="Edm.String" MaxLength="4000"/>
-                <Property Name="actionType" Type="Edm.String" MaxLength="50"/>
-                <NavigationProperty Name="contentItem" Type="ModerationService.ContentItem" Partner="contentItemActions">
-                    <ReferentialConstraint Property="contentItem_ID" ReferencedProperty="ID"/>
-                </NavigationProperty>
-                <Property Name="contentItem_ID" Type="Edm.Guid"/>
-                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
-                <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
-                <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
-                <NavigationProperty Name="DraftAdministrativeData" Type="ModerationService.DraftAdministrativeData" ContainsTarget="true"/>
-                <NavigationProperty Name="SiblingEntity" Type="ModerationService.ContentItemAction"/>
-            </EntityType>
-            <EntityType Name="ActionType">
-                <Key>
-                    <PropertyRef Name="actionTypeName"/>
-                </Key>
-                <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
-                <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
-                <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
-                <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
-                <Property Name="actionTypeName" Type="Edm.String" MaxLength="120" Nullable="false"/>
-            </EntityType>
-            <EntityType Name="MediaType">
-                <Key>
-                    <PropertyRef Name="mediaTypeName"/>
-                </Key>
-                <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
-                <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
-                <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
-                <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
-                <Property Name="mediaTypeName" Type="Edm.String" MaxLength="120" Nullable="false"/>
-            </EntityType>
-            <EntityType Name="DraftAdministrativeData">
-                <Key>
-                    <PropertyRef Name="DraftUUID"/>
-                </Key>
-                <Property Name="DraftUUID" Type="Edm.Guid" Nullable="false"/>
-                <Property Name="CreationDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
-                <Property Name="CreatedByUser" Type="Edm.String" MaxLength="256"/>
-                <Property Name="DraftIsCreatedByMe" Type="Edm.Boolean"/>
-                <Property Name="LastChangeDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
-                <Property Name="LastChangedByUser" Type="Edm.String" MaxLength="256"/>
-                <Property Name="InProcessByUser" Type="Edm.String" MaxLength="256"/>
-                <Property Name="DraftIsProcessedByMe" Type="Edm.Boolean"/>
-            </EntityType>
-            <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
-                <Parameter Name="in" Type="ModerationService.ContentItem"/>
-                <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
-                <ReturnType Type="ModerationService.ContentItem"/>
-            </Action>
-            <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
-                <Parameter Name="in" Type="ModerationService.ContentItemAction"/>
-                <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
-                <ReturnType Type="ModerationService.ContentItemAction"/>
-            </Action>
-            <Action Name="draftActivate" IsBound="true" EntitySetPath="in">
-                <Parameter Name="in" Type="ModerationService.ContentItem"/>
-                <ReturnType Type="ModerationService.ContentItem"/>
-            </Action>
-            <Action Name="draftEdit" IsBound="true" EntitySetPath="in">
-                <Parameter Name="in" Type="ModerationService.ContentItem"/>
-                <Parameter Name="PreserveChanges" Type="Edm.Boolean"/>
-                <ReturnType Type="ModerationService.ContentItem"/>
-            </Action>
-            <Annotations Target="ModerationService.ContentItem">
-                <Annotation Term="UI.HeaderInfo">
-                    <Record Type="UI.HeaderInfoType">
-                        <PropertyValue Property="TypeName" String="Content"/>
-                        <PropertyValue Property="Title">
-                            <Record Type="UI.DataField">
-                                <PropertyValue Property="Value" Path="intentName"/>
-                            </Record>
-                        </PropertyValue>
-                        <PropertyValue Property="TypeNamePlural" String="Contents"/>
-                    </Record>
-                </Annotation>
-                <Annotation Term="UI.SelectionFields">
-                    <Collection>
-                        <PropertyPath>ID</PropertyPath>
-                        <PropertyPath>intentName</PropertyPath>
-                        <PropertyPath>mediaType</PropertyPath>
-                        <PropertyPath>ownerApp</PropertyPath>
-                        <PropertyPath>targetActionDate</PropertyPath>
-                    </Collection>
-                </Annotation>
-                <Annotation Term="UI.LineItem">
-                    <Collection>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="ownerApp"/>
-                        </Record>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="intentName"/>
-                        </Record>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="intentDescription"/>
-                        </Record>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="contentUrl"/>
-                        </Record>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="contentText"/>
-                        </Record>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="mediaType"/>
-                        </Record>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="targetActionDate"/>
-                        </Record>
-                    </Collection>
-                </Annotation>
-                <Annotation Term="UI.Facets">
-                    <Collection>
-                        <Record Type="UI.ReferenceFacet">
-                            <PropertyValue Property="Label" String="Content Item Actions"/>
-                            <PropertyValue Property="Target" AnnotationPath="contentItemActions/@UI.LineItem"/>
-                        </Record>
-                    </Collection>
-                </Annotation>
-                <Annotation Term="UI.FieldGroup" Qualifier="Main">
-                    <Record Type="UI.FieldGroupType">
-                        <PropertyValue Property="Data">
-                            <Collection>
-                                <Record Type="UI.DataField">
-                                    <PropertyValue Property="Value" Path="intentDescription"/>
-                                </Record>
-                                <Record Type="UI.DataField">
-                                    <PropertyValue Property="Value" Path="mediaType"/>
-                                </Record>
-                                <Record Type="UI.DataField">
-                                    <PropertyValue Property="Value" Path="contentUrl"/>
-                                </Record>
-                                <Record Type="UI.DataField">
-                                    <PropertyValue Property="Value" Path="contentText"/>
-                                </Record>
-                                <Record Type="UI.DataField">
-                                    <PropertyValue Property="Value" Path="ownerApp"/>
-                                </Record>
-                                <Record Type="UI.DataField">
-                                    <PropertyValue Property="Value" Path="targetActionDate"/>
-                                </Record>
-                            </Collection>
-                        </PropertyValue>
-                    </Record>
-                </Annotation>
-                <Annotation Term="UI.HeaderFacets">
-                    <Collection>
-                        <Record Type="UI.ReferenceFacet">
-                            <PropertyValue Property="Label" String="Content Item Data"/>
-                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Main"/>
-                        </Record>
-                    </Collection>
-                </Annotation>
-            </Annotations>
-            <Annotations Target="ModerationService.EntityContainer/ContentItem">
-                <Annotation Term="Common.DraftRoot">
-                    <Record Type="Common.DraftRootType">
-                        <PropertyValue Property="ActivationAction" String="ModerationService.draftActivate"/>
-                        <PropertyValue Property="EditAction" String="ModerationService.draftEdit"/>
-                        <PropertyValue Property="PreparationAction" String="ModerationService.draftPrepare"/>
-                    </Record>
-                </Annotation>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItem/createdAt">
-                <Annotation Term="UI.HiddenFilter" Bool="true"/>
-                <Annotation Term="Core.Immutable" Bool="true"/>
-                <Annotation Term="Core.Computed" Bool="true"/>
-                <Annotation Term="Common.Label" String="Created On"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItem/createdBy">
-                <Annotation Term="UI.HiddenFilter" Bool="true"/>
-                <Annotation Term="Core.Immutable" Bool="true"/>
-                <Annotation Term="Core.Computed" Bool="true"/>
-                <Annotation Term="Core.Description" String="User's unique ID"/>
-                <Annotation Term="Common.Label" String="Created By"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItem/modifiedAt">
-                <Annotation Term="UI.HiddenFilter" Bool="true"/>
-                <Annotation Term="Core.Computed" Bool="true"/>
-                <Annotation Term="Common.Label" String="Changed On"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItem/modifiedBy">
-                <Annotation Term="UI.HiddenFilter" Bool="true"/>
-                <Annotation Term="Core.Computed" Bool="true"/>
-                <Annotation Term="Core.Description" String="User's unique ID"/>
-                <Annotation Term="Common.Label" String="Changed By"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItem/ID">
-                <Annotation Term="Core.Computed" Bool="true"/>
-                <Annotation Term="Common.Label" String="ID"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItem/intentName">
-                <Annotation Term="Common.Label" String="Intent"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItem/intentDescription">
-                <Annotation Term="Common.Label" String="Description"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItem/contentUrl">
-                <Annotation Term="UI.IsImageURL" Bool="true"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItem/contentText">
-                <Annotation Term="Common.Label" String="Content Text"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItem/mediaType">
-                <Annotation Term="Common.Text" Path="mediaType">
-                    <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/>
-                </Annotation>
-                <Annotation Term="Common.ValueList">
-                    <Record Type="Common.ValueListType">
-                        <PropertyValue Property="Label" String="Action Type Help"/>
-                        <PropertyValue Property="CollectionPath" String="MediaType"/>
-                        <PropertyValue Property="Parameters">
-                            <Collection>
-                                <Record Type="Common.ValueListParameterInOut">
-                                    <PropertyValue Property="LocalDataProperty" PropertyPath="mediaType"/>
-                                    <PropertyValue Property="ValueListProperty" String="mediaTypeName"/>
-                                </Record>
-                            </Collection>
-                        </PropertyValue>
-                    </Record>
-                </Annotation>
-                <Annotation Term="Common.Label" String="Media Type"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItem/ownerApp">
-                <Annotation Term="Common.Label" String="Owner App"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItem/targetActionDate">
-                <Annotation Term="Common.Label" String="Target Action Date"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItem/IsActiveEntity">
-                <Annotation Term="UI.Hidden" Bool="true"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItem/HasActiveEntity">
-                <Annotation Term="UI.Hidden" Bool="true"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItem/HasDraftEntity">
-                <Annotation Term="UI.Hidden" Bool="true"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItem/DraftAdministrativeData">
-                <Annotation Term="UI.Hidden" Bool="true"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItemAction">
-                <Annotation Term="UI.HeaderInfo">
-                    <Record Type="UI.HeaderInfoType">
-                        <PropertyValue Property="TypeName" String="ContentItemAction"/>
-                        <PropertyValue Property="TypeNamePlural" String="ContentItemActions"/>
-                    </Record>
-                </Annotation>
-                <Annotation Term="UI.SelectionFields">
-                    <Collection>
-                        <PropertyPath>actionName</PropertyPath>
-                        <PropertyPath>ownerApp</PropertyPath>
-                    </Collection>
-                </Annotation>
-                <Annotation Term="UI.LineItem">
-                    <Collection>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="actionName"/>
-                        </Record>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="actionDescription"/>
-                        </Record>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="ownerApp"/>
-                        </Record>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="actionType"/>
-                        </Record>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="actionStatus"/>
-                        </Record>
-                    </Collection>
-                </Annotation>
-                <Annotation Term="UI.Facets">
-                    <Collection>
-                        <Record Type="UI.ReferenceFacet">
-                            <PropertyValue Property="Label" String="ContentItemActionData"/>
-                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Main"/>
-                        </Record>
-                    </Collection>
-                </Annotation>
-                <Annotation Term="UI.FieldGroup" Qualifier="Main">
-                    <Record Type="UI.FieldGroupType">
-                        <PropertyValue Property="Data">
-                            <Collection>
-                                <Record Type="UI.DataField">
-                                    <PropertyValue Property="Value" Path="actionName"/>
-                                </Record>
-                                <Record Type="UI.DataField">
-                                    <PropertyValue Property="Value" Path="actionDescription"/>
-                                </Record>
-                                <Record Type="UI.DataField">
-                                    <PropertyValue Property="Value" Path="ownerApp"/>
-                                </Record>
-                                <Record Type="UI.DataField">
-                                    <PropertyValue Property="Value" Path="actionType"/>
-                                </Record>
-                                <Record Type="UI.DataField">
-                                    <PropertyValue Property="Value" Path="actionStatus"/>
-                                </Record>
-                            </Collection>
-                        </PropertyValue>
-                    </Record>
-                </Annotation>
-            </Annotations>
-            <Annotations Target="ModerationService.EntityContainer/ContentItemAction">
-                <Annotation Term="Common.DraftNode">
-                    <Record Type="Common.DraftNodeType">
-                        <PropertyValue Property="PreparationAction" String="ModerationService.draftPrepare"/>
-                    </Record>
-                </Annotation>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItemAction/createdAt">
-                <Annotation Term="UI.HiddenFilter" Bool="true"/>
-                <Annotation Term="Core.Immutable" Bool="true"/>
-                <Annotation Term="Core.Computed" Bool="true"/>
-                <Annotation Term="Common.Label" String="Created On"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItemAction/createdBy">
-                <Annotation Term="UI.HiddenFilter" Bool="true"/>
-                <Annotation Term="Core.Immutable" Bool="true"/>
-                <Annotation Term="Core.Computed" Bool="true"/>
-                <Annotation Term="Core.Description" String="User's unique ID"/>
-                <Annotation Term="Common.Label" String="Created By"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItemAction/modifiedAt">
-                <Annotation Term="UI.HiddenFilter" Bool="true"/>
-                <Annotation Term="Core.Computed" Bool="true"/>
-                <Annotation Term="Common.Label" String="Changed On"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItemAction/modifiedBy">
-                <Annotation Term="UI.HiddenFilter" Bool="true"/>
-                <Annotation Term="Core.Computed" Bool="true"/>
-                <Annotation Term="Core.Description" String="User's unique ID"/>
-                <Annotation Term="Common.Label" String="Changed By"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItemAction/ID">
-                <Annotation Term="Core.Computed" Bool="true"/>
-                <Annotation Term="Common.Label" String="ID"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItemAction/ownerApp">
-                <Annotation Term="Common.Label" String="Owner App"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItemAction/actionName">
-                <Annotation Term="Common.Label" String="Action name"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItemAction/actionDescription">
-                <Annotation Term="Common.Label" String="Action Description"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItemAction/actionStatus">
-                <Annotation Term="Common.Label" String="Action Status"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItemAction/actionCompletedDate">
-                <Annotation Term="Common.Label" String="Action Taken Date"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItemAction/actionType">
-                <Annotation Term="Common.Text" Path="actionType"/>
-                <Annotation Term="Common.ValueList">
-                    <Record Type="Common.ValueListType">
-                        <PropertyValue Property="Label" String="Action Type Help"/>
-                        <PropertyValue Property="CollectionPath" String="ActionType"/>
-                        <PropertyValue Property="Parameters">
-                            <Collection>
-                                <Record Type="Common.ValueListParameterInOut">
-                                    <PropertyValue Property="LocalDataProperty" PropertyPath="actionType"/>
-                                    <PropertyValue Property="ValueListProperty" String="actionTypeName"/>
-                                </Record>
-                            </Collection>
-                        </PropertyValue>
-                    </Record>
-                </Annotation>
-                <Annotation Term="Common.Label" String="Action Type"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItemAction/IsActiveEntity">
-                <Annotation Term="UI.Hidden" Bool="true"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItemAction/HasActiveEntity">
-                <Annotation Term="UI.Hidden" Bool="true"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItemAction/HasDraftEntity">
-                <Annotation Term="UI.Hidden" Bool="true"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ContentItemAction/DraftAdministrativeData">
-                <Annotation Term="UI.Hidden" Bool="true"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ActionType/createdAt">
-                <Annotation Term="UI.HiddenFilter" Bool="true"/>
-                <Annotation Term="Core.Immutable" Bool="true"/>
-                <Annotation Term="Core.Computed" Bool="true"/>
-                <Annotation Term="Common.Label" String="Created On"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ActionType/createdBy">
-                <Annotation Term="UI.HiddenFilter" Bool="true"/>
-                <Annotation Term="Core.Immutable" Bool="true"/>
-                <Annotation Term="Core.Computed" Bool="true"/>
-                <Annotation Term="Core.Description" String="User's unique ID"/>
-                <Annotation Term="Common.Label" String="Created By"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ActionType/modifiedAt">
-                <Annotation Term="UI.HiddenFilter" Bool="true"/>
-                <Annotation Term="Core.Computed" Bool="true"/>
-                <Annotation Term="Common.Label" String="Changed On"/>
-            </Annotations>
-            <Annotations Target="ModerationService.ActionType/modifiedBy">
-                <Annotation Term="UI.HiddenFilter" Bool="true"/>
-                <Annotation Term="Core.Computed" Bool="true"/>
-                <Annotation Term="Core.Description" String="User's unique ID"/>
-                <Annotation Term="Common.Label" String="Changed By"/>
-            </Annotations>
-            <Annotations Target="ModerationService.MediaType/createdAt">
-                <Annotation Term="UI.HiddenFilter" Bool="true"/>
-                <Annotation Term="Core.Immutable" Bool="true"/>
-                <Annotation Term="Core.Computed" Bool="true"/>
-                <Annotation Term="Common.Label" String="Created On"/>
-            </Annotations>
-            <Annotations Target="ModerationService.MediaType/createdBy">
-                <Annotation Term="UI.HiddenFilter" Bool="true"/>
-                <Annotation Term="Core.Immutable" Bool="true"/>
-                <Annotation Term="Core.Computed" Bool="true"/>
-                <Annotation Term="Core.Description" String="User's unique ID"/>
-                <Annotation Term="Common.Label" String="Created By"/>
-            </Annotations>
-            <Annotations Target="ModerationService.MediaType/modifiedAt">
-                <Annotation Term="UI.HiddenFilter" Bool="true"/>
-                <Annotation Term="Core.Computed" Bool="true"/>
-                <Annotation Term="Common.Label" String="Changed On"/>
-            </Annotations>
-            <Annotations Target="ModerationService.MediaType/modifiedBy">
-                <Annotation Term="UI.HiddenFilter" Bool="true"/>
-                <Annotation Term="Core.Computed" Bool="true"/>
-                <Annotation Term="Core.Description" String="User's unique ID"/>
-                <Annotation Term="Common.Label" String="Changed By"/>
-            </Annotations>
-            <Annotations Target="ModerationService.DraftAdministrativeData">
-                <Annotation Term="Common.Label" String="Draft Administrative Data"/>
-            </Annotations>
-            <Annotations Target="ModerationService.DraftAdministrativeData/DraftUUID">
-                <Annotation Term="UI.Hidden" Bool="true"/>
-                <Annotation Term="Common.Label" String="Draft (Technical ID)"/>
-            </Annotations>
-            <Annotations Target="ModerationService.DraftAdministrativeData/CreationDateTime">
-                <Annotation Term="Common.Label" String="Draft Created On"/>
-            </Annotations>
-            <Annotations Target="ModerationService.DraftAdministrativeData/CreatedByUser">
-                <Annotation Term="Common.Label" String="Draft Created By"/>
-            </Annotations>
-            <Annotations Target="ModerationService.DraftAdministrativeData/DraftIsCreatedByMe">
-                <Annotation Term="UI.Hidden" Bool="true"/>
-                <Annotation Term="Common.Label" String="Draft Created By Me"/>
-            </Annotations>
-            <Annotations Target="ModerationService.DraftAdministrativeData/LastChangeDateTime">
-                <Annotation Term="Common.Label" String="Draft Last Changed On"/>
-            </Annotations>
-            <Annotations Target="ModerationService.DraftAdministrativeData/LastChangedByUser">
-                <Annotation Term="Common.Label" String="Draft Last Changed By"/>
-            </Annotations>
-            <Annotations Target="ModerationService.DraftAdministrativeData/InProcessByUser">
-                <Annotation Term="Common.Label" String="Draft In Process By"/>
-            </Annotations>
-            <Annotations Target="ModerationService.DraftAdministrativeData/DraftIsProcessedByMe">
-                <Annotation Term="UI.Hidden" Bool="true"/>
-                <Annotation Term="Common.Label" String="Draft In Process By Me"/>
-            </Annotations>
-        </Schema>
-    </edmx:DataServices>
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+    <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+    <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+    <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+  </edmx:Reference>
+  <edmx:DataServices>
+    <Schema Namespace="ModerationService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <EntityContainer Name="EntityContainer">
+        <EntitySet Name="ContentItem" EntityType="ModerationService.ContentItem">
+          <NavigationPropertyBinding Path="mediaItems" Target="ContentMediaItem"/>
+          <NavigationPropertyBinding Path="contentItemActions" Target="ContentItemAction"/>
+          <NavigationPropertyBinding Path="SiblingEntity" Target="ContentItem"/>
+        </EntitySet>
+        <EntitySet Name="ContentItemAction" EntityType="ModerationService.ContentItemAction">
+          <NavigationPropertyBinding Path="contentItem" Target="ContentItem"/>
+          <NavigationPropertyBinding Path="SiblingEntity" Target="ContentItemAction"/>
+        </EntitySet>
+        <EntitySet Name="ContentMediaItem" EntityType="ModerationService.ContentMediaItem">
+          <NavigationPropertyBinding Path="contentItem" Target="ContentItem"/>
+          <NavigationPropertyBinding Path="SiblingEntity" Target="ContentMediaItem"/>
+        </EntitySet>
+        <EntitySet Name="ActionType" EntityType="ModerationService.ActionType"/>
+        <EntitySet Name="MediaType" EntityType="ModerationService.MediaType"/>
+      </EntityContainer>
+      <EntityType Name="ContentItem">
+        <Key>
+          <PropertyRef Name="ID"/>
+          <PropertyRef Name="IsActiveEntity"/>
+        </Key>
+        <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+        <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+        <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="intentName" Type="Edm.String" MaxLength="100"/>
+        <Property Name="intentDescription" Type="Edm.String" MaxLength="100"/>
+        <Property Name="contentUrl" Type="Edm.String" MaxLength="100"/>
+        <Property Name="contentText" Type="Edm.String" MaxLength="100"/>
+        <Property Name="mediaType" Type="Edm.String" MaxLength="100"/>
+        <Property Name="ownerApp" Type="Edm.String" MaxLength="120"/>
+        <Property Name="targetActionDate" Type="Edm.Date"/>
+        <NavigationProperty Name="mediaItems" Type="Collection(ModerationService.ContentMediaItem)" Partner="contentItem">
+          <OnDelete Action="Cascade"/>
+        </NavigationProperty>
+        <NavigationProperty Name="contentItemActions" Type="Collection(ModerationService.ContentItemAction)" Partner="contentItem">
+          <OnDelete Action="Cascade"/>
+        </NavigationProperty>
+        <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+        <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+        <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+        <NavigationProperty Name="DraftAdministrativeData" Type="ModerationService.DraftAdministrativeData" ContainsTarget="true"/>
+        <NavigationProperty Name="SiblingEntity" Type="ModerationService.ContentItem"/>
+      </EntityType>
+      <EntityType Name="ContentItemAction">
+        <Key>
+          <PropertyRef Name="ID"/>
+          <PropertyRef Name="IsActiveEntity"/>
+        </Key>
+        <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+        <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+        <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="ownerApp" Type="Edm.String" MaxLength="100"/>
+        <Property Name="actionName" Type="Edm.String" MaxLength="100"/>
+        <Property Name="actionDescription" Type="Edm.String" MaxLength="100"/>
+        <Property Name="actionStatus" Type="Edm.String" MaxLength="100"/>
+        <Property Name="actionCompletedDate" Type="Edm.Date"/>
+        <Property Name="actonPayload" Type="Edm.String" MaxLength="4000"/>
+        <Property Name="actionType" Type="Edm.String" MaxLength="50"/>
+        <NavigationProperty Name="contentItem" Type="ModerationService.ContentItem" Partner="contentItemActions">
+          <ReferentialConstraint Property="contentItem_ID" ReferencedProperty="ID"/>
+        </NavigationProperty>
+        <Property Name="contentItem_ID" Type="Edm.Guid"/>
+        <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+        <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+        <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+        <NavigationProperty Name="DraftAdministrativeData" Type="ModerationService.DraftAdministrativeData" ContainsTarget="true"/>
+        <NavigationProperty Name="SiblingEntity" Type="ModerationService.ContentItemAction"/>
+      </EntityType>
+      <EntityType Name="ContentMediaItem">
+        <Key>
+          <PropertyRef Name="ID"/>
+          <PropertyRef Name="IsActiveEntity"/>
+        </Key>
+        <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+        <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+        <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="mediaType" Type="Edm.String" MaxLength="100"/>
+        <Property Name="width" Type="Edm.Int32"/>
+        <Property Name="height" Type="Edm.Int32"/>
+        <Property Name="duration" Type="Edm.Int32"/>
+        <Property Name="contentUrl" Type="Edm.String" MaxLength="200"/>
+        <NavigationProperty Name="contentItem" Type="ModerationService.ContentItem" Partner="mediaItems">
+          <ReferentialConstraint Property="contentItem_ID" ReferencedProperty="ID"/>
+        </NavigationProperty>
+        <Property Name="contentItem_ID" Type="Edm.Guid"/>
+        <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+        <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+        <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+        <NavigationProperty Name="DraftAdministrativeData" Type="ModerationService.DraftAdministrativeData" ContainsTarget="true"/>
+        <NavigationProperty Name="SiblingEntity" Type="ModerationService.ContentMediaItem"/>
+      </EntityType>
+      <EntityType Name="ActionType">
+        <Key>
+          <PropertyRef Name="actionTypeName"/>
+        </Key>
+        <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+        <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+        <Property Name="actionTypeName" Type="Edm.String" MaxLength="120" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="MediaType">
+        <Key>
+          <PropertyRef Name="mediaTypeName"/>
+        </Key>
+        <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+        <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+        <Property Name="mediaTypeName" Type="Edm.String" MaxLength="120" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="DraftAdministrativeData">
+        <Key>
+          <PropertyRef Name="DraftUUID"/>
+        </Key>
+        <Property Name="DraftUUID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="CreationDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="CreatedByUser" Type="Edm.String" MaxLength="256"/>
+        <Property Name="DraftIsCreatedByMe" Type="Edm.Boolean"/>
+        <Property Name="LastChangeDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="LastChangedByUser" Type="Edm.String" MaxLength="256"/>
+        <Property Name="InProcessByUser" Type="Edm.String" MaxLength="256"/>
+        <Property Name="DraftIsProcessedByMe" Type="Edm.Boolean"/>
+      </EntityType>
+      <Action Name="performCustomAction" IsBound="true">
+        <Parameter Name="in" Type="ModerationService.ContentItem"/>
+        <Parameter Name="x" Type="ModerationService.ContentItemAction"/>
+        <ReturnType Type="Edm.String"/>
+      </Action>
+      <Action Name="approve" IsBound="true">
+        <Parameter Name="in" Type="ModerationService.ContentItem"/>
+        <Parameter Name="x" Type="ModerationService.ContentItemAction"/>
+        <ReturnType Type="Edm.String"/>
+      </Action>
+      <Action Name="reject" IsBound="true">
+        <Parameter Name="in" Type="ModerationService.ContentItem"/>
+        <Parameter Name="x" Type="ModerationService.ContentItemAction"/>
+        <ReturnType Type="Edm.String"/>
+      </Action>
+      <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="ModerationService.ContentItem"/>
+        <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+        <ReturnType Type="ModerationService.ContentItem"/>
+      </Action>
+      <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="ModerationService.ContentItemAction"/>
+        <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+        <ReturnType Type="ModerationService.ContentItemAction"/>
+      </Action>
+      <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="ModerationService.ContentMediaItem"/>
+        <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+        <ReturnType Type="ModerationService.ContentMediaItem"/>
+      </Action>
+      <Action Name="draftActivate" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="ModerationService.ContentItem"/>
+        <ReturnType Type="ModerationService.ContentItem"/>
+      </Action>
+      <Action Name="draftEdit" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="ModerationService.ContentItem"/>
+        <Parameter Name="PreserveChanges" Type="Edm.Boolean"/>
+        <ReturnType Type="ModerationService.ContentItem"/>
+      </Action>
+      <Annotations Target="ModerationService.ContentItem">
+        <Annotation Term="UI.HeaderInfo">
+          <Record Type="UI.HeaderInfoType">
+            <PropertyValue Property="TypeName" String="Content"/>
+            <PropertyValue Property="Title">
+              <Record Type="UI.DataField">
+                <PropertyValue Property="Value" Path="intentName"/>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="TypeNamePlural" String="Contents"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionFields">
+          <Collection>
+            <PropertyPath>ID</PropertyPath>
+            <PropertyPath>intentName</PropertyPath>
+            <PropertyPath>mediaType</PropertyPath>
+            <PropertyPath>ownerApp</PropertyPath>
+            <PropertyPath>targetActionDate</PropertyPath>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.LineItem">
+          <Collection>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="ownerApp"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="intentName"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="intentDescription"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="contentUrl"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="contentText"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="mediaType"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="targetActionDate"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.Facets">
+          <Collection>
+            <Record Type="UI.ReferenceFacet">
+              <PropertyValue Property="Label" String="Content Item Actions"/>
+              <PropertyValue Property="Target" AnnotationPath="contentItemActions/@UI.LineItem"/>
+            </Record>
+            <Record Type="UI.ReferenceFacet">
+              <PropertyValue Property="Label" String="Media Item"/>
+              <PropertyValue Property="Target" AnnotationPath="mediaItems/@UI.LineItem"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.FieldGroup" Qualifier="Main">
+          <Record Type="UI.FieldGroupType">
+            <PropertyValue Property="Data">
+              <Collection>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="intentDescription"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="mediaType"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="contentUrl"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="contentText"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="ownerApp"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="targetActionDate"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.HeaderFacets">
+          <Collection>
+            <Record Type="UI.ReferenceFacet">
+              <PropertyValue Property="Label" String="Content Item Data"/>
+              <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Main"/>
+            </Record>
+          </Collection>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="ModerationService.EntityContainer/ContentItem">
+        <Annotation Term="Common.DraftRoot">
+          <Record Type="Common.DraftRootType">
+            <PropertyValue Property="ActivationAction" String="ModerationService.draftActivate"/>
+            <PropertyValue Property="EditAction" String="ModerationService.draftEdit"/>
+            <PropertyValue Property="PreparationAction" String="ModerationService.draftPrepare"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItem/createdAt">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Common.Label" String="Created On"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItem/createdBy">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="User's unique ID"/>
+        <Annotation Term="Common.Label" String="Created By"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItem/modifiedAt">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Common.Label" String="Changed On"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItem/modifiedBy">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="User's unique ID"/>
+        <Annotation Term="Common.Label" String="Changed By"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItem/ID">
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Common.Label" String="ID"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItem/intentName">
+        <Annotation Term="Common.Label" String="Intent"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItem/intentDescription">
+        <Annotation Term="Common.Label" String="Description"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItem/contentUrl">
+        <Annotation Term="Common.Label" String="Content Url"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItem/contentText">
+        <Annotation Term="Common.Label" String="Content Text"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItem/mediaType">
+        <Annotation Term="Common.Text" Path="mediaType">
+          <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/>
+        </Annotation>
+        <Annotation Term="Common.ValueList">
+          <Record Type="Common.ValueListType">
+            <PropertyValue Property="Label" String="Action Type Help"/>
+            <PropertyValue Property="CollectionPath" String="MediaType"/>
+            <PropertyValue Property="Parameters">
+              <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                  <PropertyValue Property="LocalDataProperty" PropertyPath="mediaType"/>
+                  <PropertyValue Property="ValueListProperty" String="mediaTypeName"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="Common.Label" String="Media Type"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItem/ownerApp">
+        <Annotation Term="Common.Label" String="Owner App"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItem/targetActionDate">
+        <Annotation Term="Common.Label" String="Target Action Date"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItem/IsActiveEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItem/HasActiveEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItem/HasDraftEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItem/DraftAdministrativeData">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItemAction">
+        <Annotation Term="UI.HeaderInfo">
+          <Record Type="UI.HeaderInfoType">
+            <PropertyValue Property="TypeName" String="Content Item Action"/>
+            <PropertyValue Property="TypeNamePlural" String="Content Item Actions"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionFields">
+          <Collection>
+            <PropertyPath>actionName</PropertyPath>
+            <PropertyPath>ownerApp</PropertyPath>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.LineItem">
+          <Collection>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="actionName"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="actionDescription"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="ownerApp"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="actionType"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="actionStatus"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.Facets">
+          <Collection>
+            <Record Type="UI.ReferenceFacet">
+              <PropertyValue Property="Label" String="ContentItemActionData"/>
+              <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Main"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.FieldGroup" Qualifier="Main">
+          <Record Type="UI.FieldGroupType">
+            <PropertyValue Property="Data">
+              <Collection>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="actionName"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="actionDescription"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="ownerApp"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="actionType"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="actionStatus"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="ModerationService.EntityContainer/ContentItemAction">
+        <Annotation Term="Common.DraftNode">
+          <Record Type="Common.DraftNodeType">
+            <PropertyValue Property="PreparationAction" String="ModerationService.draftPrepare"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItemAction/createdAt">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Common.Label" String="Created On"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItemAction/createdBy">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="User's unique ID"/>
+        <Annotation Term="Common.Label" String="Created By"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItemAction/modifiedAt">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Common.Label" String="Changed On"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItemAction/modifiedBy">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="User's unique ID"/>
+        <Annotation Term="Common.Label" String="Changed By"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItemAction/ID">
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Common.Label" String="ID"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItemAction/ownerApp">
+        <Annotation Term="Common.Label" String="Owner App"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItemAction/actionName">
+        <Annotation Term="Common.Label" String="Action name"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItemAction/actionDescription">
+        <Annotation Term="Common.Label" String="Action Description"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItemAction/actionStatus">
+        <Annotation Term="Common.Label" String="Action Status"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItemAction/actionCompletedDate">
+        <Annotation Term="Common.Label" String="Action Taken Date"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItemAction/actionType">
+        <Annotation Term="Common.Text" Path="actionType"/>
+        <Annotation Term="Common.ValueList">
+          <Record Type="Common.ValueListType">
+            <PropertyValue Property="Label" String="Action Type Help"/>
+            <PropertyValue Property="CollectionPath" String="ActionType"/>
+            <PropertyValue Property="Parameters">
+              <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                  <PropertyValue Property="LocalDataProperty" PropertyPath="actionType"/>
+                  <PropertyValue Property="ValueListProperty" String="actionTypeName"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="Common.Label" String="Action Type"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItemAction/IsActiveEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItemAction/HasActiveEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItemAction/HasDraftEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentItemAction/DraftAdministrativeData">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentMediaItem">
+        <Annotation Term="UI.HeaderInfo">
+          <Record Type="UI.HeaderInfoType">
+            <PropertyValue Property="TypeName" String="Media Item"/>
+            <PropertyValue Property="TypeNamePlural" String="Media Items"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionFields">
+          <Collection>
+            <PropertyPath>mediaType</PropertyPath>
+            <PropertyPath>contentUrl</PropertyPath>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.LineItem">
+          <Collection>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="mediaType"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="contentUrl"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.Facets">
+          <Collection>
+            <Record Type="UI.ReferenceFacet">
+              <PropertyValue Property="Label" String="Content Media Item Data"/>
+              <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Main"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.FieldGroup" Qualifier="Main">
+          <Record Type="UI.FieldGroupType">
+            <PropertyValue Property="Data">
+              <Collection>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="mediaType"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="contentUrl"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="ModerationService.EntityContainer/ContentMediaItem">
+        <Annotation Term="Common.DraftNode">
+          <Record Type="Common.DraftNodeType">
+            <PropertyValue Property="PreparationAction" String="ModerationService.draftPrepare"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentMediaItem/createdAt">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Common.Label" String="Created On"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentMediaItem/createdBy">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="User's unique ID"/>
+        <Annotation Term="Common.Label" String="Created By"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentMediaItem/modifiedAt">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Common.Label" String="Changed On"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentMediaItem/modifiedBy">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="User's unique ID"/>
+        <Annotation Term="Common.Label" String="Changed By"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentMediaItem/ID">
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Common.Label" String="ID"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentMediaItem/mediaType">
+        <Annotation Term="Common.Text" Path="mediaType">
+          <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/>
+        </Annotation>
+        <Annotation Term="Common.ValueList">
+          <Record Type="Common.ValueListType">
+            <PropertyValue Property="Label" String="Action Type Help"/>
+            <PropertyValue Property="CollectionPath" String="MediaType"/>
+            <PropertyValue Property="Parameters">
+              <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                  <PropertyValue Property="LocalDataProperty" PropertyPath="mediaType"/>
+                  <PropertyValue Property="ValueListProperty" String="mediaTypeName"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="Common.Label" String="Media Type"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentMediaItem/width">
+        <Annotation Term="Common.Label" String="Width"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentMediaItem/height">
+        <Annotation Term="Common.Label" String="Height"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentMediaItem/duration">
+        <Annotation Term="Common.Label" String="Duration Seconds"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentMediaItem/contentUrl">
+        <Annotation Term="Common.Label" String="Content Url"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentMediaItem/IsActiveEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentMediaItem/HasActiveEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentMediaItem/HasDraftEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ContentMediaItem/DraftAdministrativeData">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ActionType/createdAt">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Common.Label" String="Created On"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ActionType/createdBy">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="User's unique ID"/>
+        <Annotation Term="Common.Label" String="Created By"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ActionType/modifiedAt">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Common.Label" String="Changed On"/>
+      </Annotations>
+      <Annotations Target="ModerationService.ActionType/modifiedBy">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="User's unique ID"/>
+        <Annotation Term="Common.Label" String="Changed By"/>
+      </Annotations>
+      <Annotations Target="ModerationService.MediaType/createdAt">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Common.Label" String="Created On"/>
+      </Annotations>
+      <Annotations Target="ModerationService.MediaType/createdBy">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="User's unique ID"/>
+        <Annotation Term="Common.Label" String="Created By"/>
+      </Annotations>
+      <Annotations Target="ModerationService.MediaType/modifiedAt">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Common.Label" String="Changed On"/>
+      </Annotations>
+      <Annotations Target="ModerationService.MediaType/modifiedBy">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="User's unique ID"/>
+        <Annotation Term="Common.Label" String="Changed By"/>
+      </Annotations>
+      <Annotations Target="ModerationService.DraftAdministrativeData">
+        <Annotation Term="Common.Label" String="Draft Administrative Data"/>
+      </Annotations>
+      <Annotations Target="ModerationService.DraftAdministrativeData/DraftUUID">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+        <Annotation Term="Common.Label" String="Draft (Technical ID)"/>
+      </Annotations>
+      <Annotations Target="ModerationService.DraftAdministrativeData/CreationDateTime">
+        <Annotation Term="Common.Label" String="Draft Created On"/>
+      </Annotations>
+      <Annotations Target="ModerationService.DraftAdministrativeData/CreatedByUser">
+        <Annotation Term="Common.Label" String="Draft Created By"/>
+      </Annotations>
+      <Annotations Target="ModerationService.DraftAdministrativeData/DraftIsCreatedByMe">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+        <Annotation Term="Common.Label" String="Draft Created By Me"/>
+      </Annotations>
+      <Annotations Target="ModerationService.DraftAdministrativeData/LastChangeDateTime">
+        <Annotation Term="Common.Label" String="Draft Last Changed On"/>
+      </Annotations>
+      <Annotations Target="ModerationService.DraftAdministrativeData/LastChangedByUser">
+        <Annotation Term="Common.Label" String="Draft Last Changed By"/>
+      </Annotations>
+      <Annotations Target="ModerationService.DraftAdministrativeData/InProcessByUser">
+        <Annotation Term="Common.Label" String="Draft In Process By"/>
+      </Annotations>
+      <Annotations Target="ModerationService.DraftAdministrativeData/DraftIsProcessedByMe">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+        <Annotation Term="Common.Label" String="Draft In Process By Me"/>
+      </Annotations>
+    </Schema>
+  </edmx:DataServices>
 </edmx:Edmx>
